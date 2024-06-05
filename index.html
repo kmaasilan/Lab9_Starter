@@ -87,21 +87,109 @@
     </section>
   </main>
 
+  <!--For third party error tracking-->
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "b33cc5f9bb59463e8203852c0b921c98"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+  <script>
+    //global error handler
+    window.onerror = function(msg, src, line, col, err) {
+      console.log(`line ${line} in ${src} has ${msg}`);
+      TrackJS.track(`line ${line} in ${src} has ${msg}`);
+    }
+
+    //Custom error
+    class divByZeroError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "divByZeroError";
+      }
+    }
+
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
       let output = document.querySelector('output');
       let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        let secondNum = document.querySelector('#second-num').value;
+        let operator = document.querySelector('#operator').value;
+        if(secondNum === "0" && operator === "/") {
+          throw new divByZeroError("Can't divide by 0!");
+        }
+        try {
+          output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+        } catch {
+          output.innerHTML = 'Very funny... Enter numbers next time!';
+        }
+      } catch(err) {
+        output.innerHTML = err;
+      } finally {
+        console.log(output.innerHTML);
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+
+    //try, catch, finally, and throw are used above
+
+    errorBtns[0].addEventListener('click', () => {
+      console.log('important log');
+    });
+    errorBtns[1].addEventListener('click', () => {
+      console.error('important error!');
+    });
+    errorBtns[2].addEventListener('click', () => {
+      console.count('important count!');
+    });
+    errorBtns[3].addEventListener('click', () => {
+      console.warn('important warning!');
+    });
+    errorBtns[4].addEventListener('click', () => {
+      let a = 2;
+      let b = 3; //should be 2 but is 3 for demonstration purposes
+      console.assert(a === b, {a: 2, b: 2, why: 'a(2) should equal b(2)'});
+    });
+    errorBtns[5].addEventListener('click', () => {
+      console.clear();
+    });
+    errorBtns[6].addEventListener('click', () => {
+      console.dir(document.body);
+    });
+    errorBtns[7].addEventListener('click', () => {
+      console.dirxml(document.body);
+    });
+    errorBtns[8].addEventListener('click', () => {
+      console.group('important group!');
+    });
+    errorBtns[9].addEventListener('click', () => {
+      console.groupEnd('important group!');
+    });
+    errorBtns[10].addEventListener('click', () => {
+      console.table([{taskTitle: 'finish HW', taskDesc: 'finish Lab 9 for CSE 110', taskID: 1}, 
+                     {taskTitle: 'study for exam', taskDesc: 'study for CSE 100R final exam', taskID: 2}, 
+                     {taskTitle: 'clean room', taskDesc: 'clean and vacuum room', taskID: 3}]);
+    });
+    errorBtns[11].addEventListener('click', () => {
+      console.time();
+    });
+    errorBtns[12].addEventListener('click', () => {
+      console.timeEnd();
+    });
+    errorBtns[13].addEventListener('click', () => {
+      console.trace();
+    });
+    errorBtns[14].addEventListener('click', () => {
+      throw new Error('important GLOBAL error!');
+    });
+
   </script>
 </body>
 
