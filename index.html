@@ -97,9 +97,9 @@
   </script>
   <script>
     //global error handler
-    window.onerror = function(message, url, line, col, error) {
-      console.log(`line ${line} in ${url} has ${message}`);
-      TrackJS.track(`line ${line} in ${url} has ${message}`);
+    window.onerror = function(msg, src, line, col, err) {
+      console.log(`${msg}`);
+      TrackJS.track(`${msg}`);
     }
 
     //Custom error
