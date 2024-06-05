@@ -192,10 +192,10 @@
       };
       so();
     });
-    errorBtns[14].addEventListener('click', () => {
+    function globalError() {
       throw new Error('important GLOBAL error!');
-    });
-
+    }
+    errorBtns[14].onclick = globalError;
   </script>
 </body>
 
